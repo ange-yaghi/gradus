@@ -14,9 +14,21 @@
     <Filter Include="test">
       <UniqueIdentifier>{44d7f6b8-b219-4a83-b1e2-9787cf716909}</UniqueIdentifier>
     </Filter>
+    <Filter Include="scripts">
+      <UniqueIdentifier>{0b9ce1e8-9a8a-41e7-a845-b39cde08a219}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tracking">
+      <UniqueIdentifier>{9c879797-5a32-4ec5-a164-cc9c3fae75ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="gr_note.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="gr_object.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -24,5 +36,24 @@
     <ClInclude Include="..\..\include\global_settings.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="gr_note.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="gr_dynamic_array.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="gr_object.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\scripts\increment_build_version.py">
+      <Filter>scripts</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\..\tracking\BuildVersion.txt">
+      <Filter>tracking</Filter>
+    </Text>
   </ItemGroup>
 </Project>
