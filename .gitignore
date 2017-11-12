@@ -1,0 +1,13 @@
+*.log
+*.pdb
+*.idb
+*.lastbuildstate
+*.suo
+*.exe
+*.lastcodeanalysissucceeded
+*.ilk
+*.tlog
+*.xml
+*.obj
+*.sdf
+*.opendb
