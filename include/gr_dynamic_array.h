@@ -63,8 +63,8 @@ public:
 
 	enum ERROR_CODE
 	{
-		NO_ERROR,
-		OUT_OF_BOUNDS
+		ERROR_NO_ERROR,
+		ERROR_OUT_OF_BOUNDS
 	};
 
 public:
@@ -106,7 +106,7 @@ public:
 		m_array[m_nObjects] = new TYPE;
 
 		// Cast to a standard array element
-		ysDynamicArrayElement *sElement = static_cast<ysDynamicArrayElement *>(m_array[m_nObjects]);
+		grDynamicArrayElement *sElement = static_cast<grDynamicArrayElement *>(m_array[m_nObjects]);
 		sElement->SetAlignment(0);
 		sElement->SetIndex(m_nObjects);
 
@@ -122,7 +122,7 @@ public:
 		m_array[m_nObjects] = type;
 
 		// Cast to a standard array element
-		ysDynamicArrayElement *sElement = static_cast<ysDynamicArrayElement *>(m_array[m_nObjects]);
+		grDynamicArrayElement *sElement = static_cast<grDynamicArrayElement *>(m_array[m_nObjects]);
 		sElement->SetIndex(m_nObjects);
 
 		m_nObjects++;
@@ -145,7 +145,7 @@ public:
 		m_array[offset] = type;
 
 		// Cast to a standard array element
-		ysDynamicArrayElement *sElement = static_cast<ysDynamicArrayElement *>(m_array[offset]);
+		grDynamicArrayElement *sElement = static_cast<grDynamicArrayElement *>(m_array[offset]);
 		sElement->SetIndex(offset);
 
 		m_nObjects++;
@@ -166,7 +166,7 @@ public:
 		m_array[offset] = type;
 
 		// Cast to a standard array element
-		ysDynamicArrayElement *sElement = static_cast<ysDynamicArrayElement *>(m_array[offset]);
+		grDynamicArrayElement *sElement = static_cast<grDynamicArrayElement *>(m_array[offset]);
 		sElement->SetIndex(offset);
 
 	}
@@ -188,7 +188,7 @@ public:
 		else m_array[m_nObjects] = static_cast<TYPE *>(new DYN_TYPE);
 
 		// Cast to a standard array element
-		ysDynamicArrayElement *sElement = static_cast<ysDynamicArrayElement *>(m_array[m_nObjects]);
+		grDynamicArrayElement *sElement = static_cast<grDynamicArrayElement *>(m_array[m_nObjects]);
 		sElement->SetAlignment(alignment);
 		sElement->SetIndex(m_nObjects);
 
@@ -199,11 +199,11 @@ public:
 	ERROR_CODE Delete(int index, bool destroy = true, TYPE *replacement = NULL, bool preserveOrder = false)
 	{
 
-		if (index >= m_nObjects || index < 0) return ERROR_CODE::OUT_OF_BOUNDS;
+		if (index >= m_nObjects || index < 0) return ERROR_CODE::ERROR_OUT_OF_BOUNDS;
 
 		if (m_nObjects <= m_maxSize / 2) Condense();
 
-		ysDynamicArrayElement *target = static_cast<ysDynamicArrayElement *>(m_array[index]);
+		grDynamicArrayElement *target = static_cast<grDynamicArrayElement *>(m_array[index]);
 
 		if (destroy)
 		{
@@ -244,7 +244,7 @@ public:
 
 					m_array[i] = m_array[i + 1];
 
-					ysDynamicArrayElement *sElement = static_cast<ysDynamicArrayElement *>(m_array[i]);
+					grDynamicArrayElement *sElement = static_cast<grDynamicArrayElement *>(m_array[i]);
 					sElement->SetIndex(i);
 
 				}
@@ -267,7 +267,7 @@ public:
 		if (m_array[index])
 		{
 
-			ysDynamicArrayElement *sElement = static_cast<ysDynamicArrayElement *>(m_array[index]);
+			grDynamicArrayElement *sElement = static_cast<grDynamicArrayElement *>(m_array[index]);
 			sElement->SetIndex(index);
 
 		}
@@ -279,7 +279,7 @@ public:
 
 		}
 
-		return ERROR_CODE::NO_ERROR;
+		return ERROR_CODE::ERROR_NO_ERROR;
 
 	}
 

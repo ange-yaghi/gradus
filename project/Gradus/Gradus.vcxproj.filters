@@ -20,30 +20,54 @@
     <Filter Include="tracking">
       <UniqueIdentifier>{9c879797-5a32-4ec5-a164-cc9c3fae75ea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\midi">
+      <UniqueIdentifier>{f3d5614f-9c49-4427-b455-c5081cfc0b4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\midi">
+      <UniqueIdentifier>{72165a26-3da2-4851-ac70-8a0a0f761c30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\midi\midi_output">
+      <UniqueIdentifier>{7061d08d-e367-4c4e-a92b-0ea1664504df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\midi\midi_output">
+      <UniqueIdentifier>{39f52d60-65b2-4ff3-a532-88a3b7790f4f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="gr_note.cpp">
+    <ClCompile Include="..\..\src\gr_note.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="gr_object.cpp">
+    <ClCompile Include="..\..\src\gr_object.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\gr_midi_output.cpp">
+      <Filter>src\midi\midi_output</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\gr_midi.cpp">
+      <Filter>src\midi</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\global_settings.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="gr_note.h">
+    <ClInclude Include="..\..\include\gr_note.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="gr_dynamic_array.h">
+    <ClInclude Include="..\..\include\gr_object.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="gr_object.h">
+    <ClInclude Include="..\..\include\gr_dynamic_array.h">
       <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gr_midi_output.h">
+      <Filter>include\midi\midi_output</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gr_midi.h">
+      <Filter>include\midi</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

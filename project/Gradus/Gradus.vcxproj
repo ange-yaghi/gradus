@@ -150,15 +150,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\gr_midi.cpp" />
+    <ClCompile Include="..\..\src\gr_midi_output.cpp" />
+    <ClCompile Include="..\..\src\gr_note.cpp" />
+    <ClCompile Include="..\..\src\gr_object.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
-    <ClCompile Include="gr_note.cpp" />
-    <ClCompile Include="gr_object.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\global_settings.h" />
-    <ClInclude Include="gr_object.h" />
-    <ClInclude Include="gr_dynamic_array.h" />
-    <ClInclude Include="gr_note.h" />
+    <ClInclude Include="..\..\include\gr_dynamic_array.h" />
+    <ClInclude Include="..\..\include\gr_midi.h" />
+    <ClInclude Include="..\..\include\gr_midi_output.h" />
+    <ClInclude Include="..\..\include\gr_note.h" />
+    <ClInclude Include="..\..\include\gr_object.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\scripts\increment_build_version.py" />
