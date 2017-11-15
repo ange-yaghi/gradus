@@ -893,7 +893,7 @@ UINT32 grMidiFile::ReadTrackEvent(UINT32 currentTime)
 
 		m_chunkDataRemaining -= sizeof(BYTE) * 2;
 
-		if (midiStatus == 0x90 || midiStatus == 0x91)
+		if ((midiStatus & 0xF0) == 0x90)
 		{
 
 			BYTE key = byte1;
