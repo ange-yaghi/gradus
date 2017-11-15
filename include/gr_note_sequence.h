@@ -1,10 +1,13 @@
 #ifndef GR_NOTE_SEQUENCE_H
 #define GR_NOTE_SEQUENCE_H
 
+#include "gr_object.h"
+#include "gr_note.h"
+
 #include <gr_dynamic_array.h>
 
-class grNote;
-class grNoteSequence
+
+class grNoteSequence : public grObject
 {
 
 public:

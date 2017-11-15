@@ -150,18 +150,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\gr_lilypond_writer.cpp" />
     <ClCompile Include="..\..\src\gr_midi.cpp" />
     <ClCompile Include="..\..\src\gr_midi_output.cpp" />
+    <ClCompile Include="..\..\src\gr_music_snippet.cpp" />
     <ClCompile Include="..\..\src\gr_note.cpp" />
+    <ClCompile Include="..\..\src\gr_note_sequence.cpp" />
     <ClCompile Include="..\..\src\gr_object.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\global_settings.h" />
     <ClInclude Include="..\..\include\gr_dynamic_array.h" />
+    <ClInclude Include="..\..\include\gr_lilypond_writer.h" />
     <ClInclude Include="..\..\include\gr_midi.h" />
     <ClInclude Include="..\..\include\gr_midi_output.h" />
+    <ClInclude Include="..\..\include\gr_music_snippet.h" />
     <ClInclude Include="..\..\include\gr_note.h" />
+    <ClInclude Include="..\..\include\gr_note_sequence.h" />
     <ClInclude Include="..\..\include\gr_object.h" />
   </ItemGroup>
   <ItemGroup>

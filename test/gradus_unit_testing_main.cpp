@@ -5,6 +5,8 @@
 #include <fstream>
 #include <iomanip>
 
+/* Test change */
+
 struct Gradus_UnitTestConfiguration
 {
 	Gradus_UnitTestConfiguration()

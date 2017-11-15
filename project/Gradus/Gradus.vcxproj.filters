@@ -49,6 +49,15 @@
     <ClCompile Include="..\..\src\gr_midi.cpp">
       <Filter>src\midi</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\gr_lilypond_writer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\gr_music_snippet.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\gr_note_sequence.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\global_settings.h">
@@ -68,6 +77,15 @@
     </ClInclude>
     <ClInclude Include="..\..\include\gr_midi.h">
       <Filter>include\midi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gr_lilypond_writer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gr_music_snippet.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\gr_note_sequence.h">
+      <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -3,6 +3,38 @@
 
 #include "gr_object.h"
 
+class grNoteValue
+{
+
+public:
+    grNoteValue();
+    ~grNoteValue();
+
+    // Reduce this note value to the simplest form
+    void Reduce();
+
+    // Subtract two note lengths
+    static grNoteValue Subtract(const grNoteValue &a, const grNoteValue &b);
+
+    // Add two note lengths
+	static grNoteValue Add(const grNoteValue &a, const grNoteValue &b);
+	
+	// Determine if one is greater than the other
+	static int Compare(const grNoteValue &a, const grNoteValue &b);
+
+    // The numerator of the note length
+    int Numerator;
+
+    // The denominator of the note length
+    int Denominator;
+
+private:
+
+    // Calculate the greatest commond divisor of two numbers
+    static int CalculateGCD(int a, int b);
+
+};
+
 class grNote : public grObject
 {
 public:
@@ -28,7 +60,8 @@ public:
 		G,
 		A,
 		B,
-		REST
+		REST,
+		BLANK
 	};
 
 	// Get the accidental for this note
@@ -49,17 +82,11 @@ public:
 	// Set the octave number
 	void setOctave(int octave) { m_octave = octave; }
 
-	// Get the length numerator
-	int getNumLength() const { return m_nLength; }
+	// Set the note value
+	void setNoteValue(grNoteValue &value) { m_noteValue = value; }
 
-	// Set the length numerator
-	void setNumLength(int numerator) { m_nLength = numerator; }
-
-	// Get the length denominator
-	int getDenLength() const { return m_dLength; }
-
-	// Set the length denominator
-	void setDenLength(int denominator) { m_dLength = denominator; }
+	// Get the note value
+	grNoteValue getNoteValue() { return m_noteValue; }
 
 private:
 	// Accidental applied to this note
@@ -71,11 +98,9 @@ private:
 	// The octave of the note
 	int m_octave;
 
-	// Note denominator
-	int m_dLength;
+	// Note value
+	grNoteValue m_noteValue;
 
-	// Note numerator
-	int m_nLength;
 };
 
 #endif	// GR_NOTE_H
