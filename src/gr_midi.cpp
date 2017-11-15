@@ -159,7 +159,7 @@ void grMidiAnalysisNote::CopyTo(grMidiNote *midiNote) const
 
 }
 
-grMidiTrack::grMidiTrack()
+grMidiTrack::grMidiTrack() : grObject("grMidiTrack")
 {
 
 	m_parent = NULL;
@@ -329,19 +329,16 @@ int grMidiTrack::GetEndDeltaTime() const
 
 }
 
-grMidiPianoSegment::grMidiPianoSegment()
+grMidiSegment::grMidiSegment()
 {
-
-	m_leftHand.m_parent = this;
-	m_rightHand.m_parent = this;
 
 }
 
-grMidiPianoSegment::~grMidiPianoSegment()
+grMidiSegment::~grMidiSegment()
 {
 }
 
-int grMidiPianoSegment::ConvertDeltaTimeToNote(int deltaTime) const
+int grMidiSegment::ConvertDeltaTimeToNote(int deltaTime) const
 {
 
 	if (deltaTime == 0) return 0;
@@ -352,7 +349,7 @@ int grMidiPianoSegment::ConvertDeltaTimeToNote(int deltaTime) const
 
 }
 
-int grMidiPianoSegment::ConvertDeltaTimeToMilliseconds(int deltaTime, int tempoBPM) const
+int grMidiSegment::ConvertDeltaTimeToMilliseconds(int deltaTime, int tempoBPM) const
 {
 
 	double tempo_us = 60.0 * 1000000 / (tempoBPM);
@@ -363,7 +360,7 @@ int grMidiPianoSegment::ConvertDeltaTimeToMilliseconds(int deltaTime, int tempoB
 
 }
 
-int grMidiPianoSegment::ConvertMillisecondsToDeltaTime(int ms, int tempoBPM) const
+int grMidiSegment::ConvertMillisecondsToDeltaTime(int ms, int tempoBPM) const
 {
 
 	double tempo_us = 60.0 * 1000000 / (tempoBPM);
@@ -379,7 +376,7 @@ int grMidiPianoSegment::ConvertMillisecondsToDeltaTime(int ms, int tempoBPM) con
 
 }
 
-int grMidiPianoSegment::ConvertSecondsToDeltaTime(double s, int tempoBPM) const
+int grMidiSegment::ConvertSecondsToDeltaTime(double s, int tempoBPM) const
 {
 
 	double tempo_us = 60.0 * 1000000 / (tempoBPM);
@@ -390,27 +387,35 @@ int grMidiPianoSegment::ConvertSecondsToDeltaTime(double s, int tempoBPM) const
 
 }
 
-int grMidiPianoSegment::GetStartDeltaTime() const
+int grMidiSegment::GetStartDeltaTime() const
 {
+	int startTime = INT_MAX;
 
-	if (m_rightHand.GetNoteCount() == 0) return m_leftHand.GetStartDeltaTime();
-	else if (m_leftHand.GetNoteCount() == 0) return m_rightHand.GetStartDeltaTime();
+	int n = m_tracks.GetNumObjects();
 
-	return min(m_rightHand.GetStartDeltaTime(), m_leftHand.GetStartDeltaTime());
+	for (int i = 0; i < n; i++)
+	{
+		startTime = min(startTime, m_tracks.Get(i)->GetStartDeltaTime());
+	}
 
+	return startTime;
 }
 
-int grMidiPianoSegment::GetEndDeltaTime() const
+int grMidiSegment::GetEndDeltaTime() const
 {
+	int startTime = INT_MIN;
 
-	if (m_rightHand.GetNoteCount() == 0) return m_leftHand.GetEndDeltaTime();
-	else if (m_leftHand.GetNoteCount() == 0) return m_rightHand.GetEndDeltaTime();
+	int n = m_tracks.GetNumObjects();
 
-	return max(m_rightHand.GetEndDeltaTime(), m_leftHand.GetEndDeltaTime());
+	for (int i = 0; i < n; i++)
+	{
+		startTime = max(startTime, m_tracks.Get(i)->GetStartDeltaTime());
+	}
 
+	return startTime;
 }
 
-void grMidiPianoSegment::SetTempoBPM(int bpm)
+void grMidiSegment::SetTempoBPM(int bpm)
 {
 
 	double t = 60.0 / bpm;
@@ -420,7 +425,7 @@ void grMidiPianoSegment::SetTempoBPM(int bpm)
 
 }
 
-int grMidiPianoSegment::GetTempoBPM() const
+int grMidiSegment::GetTempoBPM() const
 {
 
 	double bpm = 60.0 / (m_tempo / 1000000.0);
@@ -429,7 +434,7 @@ int grMidiPianoSegment::GetTempoBPM() const
 
 }
 
-void grMidiPianoSegment::CopySettingsTo(grMidiPianoSegment *targetSegment) const
+void grMidiSegment::CopySettingsTo(grMidiSegment *targetSegment) const
 {
 
 	targetSegment->m_negativeSMPTEFormat = m_negativeSMPTEFormat;
@@ -486,7 +491,7 @@ void grMidiFile::ByteSwap24(UINT32 *data)
 
 }
 
-void grMidiFile::Write(const char *fname, grMidiPianoSegment *segment)
+void grMidiFile::Write(const char *fname, grMidiSegment *segment)
 {
 
 	std::ofstream outputFile;
@@ -506,8 +511,13 @@ void grMidiFile::Write(const char *fname, grMidiPianoSegment *segment)
 
 	grMidiChunk_Header *headerChunk = topLevel.NewChunk<grMidiChunk_Header>();
 	grMidiChunk_Track *controlTrack = topLevel.NewChunk<grMidiChunk_Track>();
-	grMidiChunk_Track *leftTrack = topLevel.NewChunk<grMidiChunk_Track>();
-	grMidiChunk_Track *rightTrack = topLevel.NewChunk<grMidiChunk_Track>();
+
+	int trackCount = segment->GetTrackCount();
+	grMidiChunk_Track **tracks = new grMidiChunk_Track*[trackCount];
+	for (int i = 0; i < trackCount; i++)
+	{
+		tracks[i] = topLevel.NewChunk<grMidiChunk_Track>();
+	}
 
 	// Header chunk
 	headerChunk->m_ticksPerQuarterNote = segment->m_ticksPerQuarterNote;
@@ -526,22 +536,30 @@ void grMidiFile::Write(const char *fname, grMidiPianoSegment *segment)
 
 	grMidiTrackEvent_Meta_EndOfTrack *endOfTrack = controlTrack->NewTrackEvent<grMidiTrackEvent_Meta_EndOfTrack>(startDeltaTime);
 
-	// Left and right hand	
-	grMidiTrackEvent_Meta_TrackName *leftTrackName = leftTrack->NewTrackEvent<grMidiTrackEvent_Meta_TrackName>(startDeltaTime);
-	leftTrackName->SetTrackName("Left-hand:");
-	WriteTrackData(leftTrack, &segment->m_leftHand, segment, 0);
+	// Write all tracks
+	for (int i = 0; i < trackCount; i++)
+	{
+		std::string trackname = "voice_" + i;
 
-	grMidiTrackEvent_Meta_TrackName *rightTrackName = rightTrack->NewTrackEvent<grMidiTrackEvent_Meta_TrackName>(startDeltaTime);
-	rightTrackName->SetTrackName("Right-hand:");
-	WriteTrackData(rightTrack, &segment->m_rightHand, segment, 0);
+		grMidiTrackEvent_Meta_TrackName *leftTrackName = tracks[i]->NewTrackEvent<grMidiTrackEvent_Meta_TrackName>(startDeltaTime);
+		leftTrackName->SetTrackName(trackname.c_str());
+		WriteTrackData(tracks[i], segment->GetTrack(i), segment, 0);
+
+	}
+
+	//grMidiTrackEvent_Meta_TrackName *rightTrackName = rightTrack->NewTrackEvent<grMidiTrackEvent_Meta_TrackName>(startDeltaTime);
+	//rightTrackName->SetTrackName("Right-hand:");
+	//WriteTrackData(rightTrack, &segment->m_rightHand, segment, 0);
 
 	topLevel.WriteToFile(&outputFile);
 
 	outputFile.close();
 
+	delete[] tracks;
+
 }
 
-grMidiPianoSegment *grMidiFile::Read(const char *fname)
+grMidiSegment *grMidiFile::Read(const char *fname)
 {
 
 	m_file.open(fname, std::ios::binary | std::ios::in);
@@ -558,7 +576,7 @@ grMidiPianoSegment *grMidiFile::Read(const char *fname)
 
 	}
 
-	m_generatedSegment = new grMidiPianoSegment;
+	m_generatedSegment = new grMidiSegment;
 
 	while (true)
 	{
@@ -578,7 +596,7 @@ grMidiPianoSegment *grMidiFile::Read(const char *fname)
 	}
 
 	// Reset all parameters
-	grMidiPianoSegment *segment = m_generatedSegment;
+	grMidiSegment *segment = m_generatedSegment;
 
 	// Close the file 
 	m_file.close();
@@ -593,7 +611,7 @@ grMidiPianoSegment *grMidiFile::Read(const char *fname)
 
 }
 
-void grMidiFile::WriteTrackData(grMidiChunk_Track *target, grMidiTrack *source, grMidiPianoSegment *segment, int channel)
+void grMidiFile::WriteTrackData(grMidiChunk_Track *target, grMidiTrack *source, grMidiSegment *segment, int channel)
 {
 
 	int nNotes = source->GetNoteCount();
@@ -653,7 +671,7 @@ void grMidiFile::ReadChunk(grMidiChunkHeader *header)
 		{
 
 			// Metrical time
-			m_generatedSegment->m_timeFormat = grMidiPianoSegment::TIME_FORMAT_METRICAL;
+			m_generatedSegment->m_timeFormat = grMidiSegment::TIME_FORMAT_METRICAL;
 			m_generatedSegment->m_ticksPerQuarterNote = chunkData.Division & 0x7FFF;
 
 		}
@@ -662,7 +680,7 @@ void grMidiFile::ReadChunk(grMidiChunkHeader *header)
 		{
 
 			// Time-code time
-			m_generatedSegment->m_timeFormat = grMidiPianoSegment::TIME_FORMAT_TIME_CODE;
+			m_generatedSegment->m_timeFormat = grMidiSegment::TIME_FORMAT_TIME_CODE;
 			m_generatedSegment->m_negativeSMPTEFormat = (chunkData.Division & 0x7FFF) >> 8;
 			m_generatedSegment->m_ticksPerFrame = (chunkData.Division & 0x00FF);
 
@@ -678,9 +696,8 @@ void grMidiFile::ReadChunk(grMidiChunkHeader *header)
 
 		// Read a track chunk
 
-		// By default track data is read into the right hand
-		// unless specified otherwise
-		m_targetTrack = &m_generatedSegment->m_rightHand;
+		// Create a new target track
+		m_targetTrack = m_generatedSegment->NewTrack();
 
 		UINT32 currentTime = 0;
 
@@ -692,8 +709,6 @@ void grMidiFile::ReadChunk(grMidiChunkHeader *header)
 			currentTime += ReadTrackEvent(currentTime);
 
 		}
-
-		int a = 0;
 
 	}
 
@@ -793,12 +808,6 @@ UINT32 grMidiFile::ReadTrackEvent(UINT32 currentTime)
 
 			m_file.read(text, length);
 			text[length] = '\0';
-
-			if (strcmp(text, "Left-hand:") == 0)
-				m_targetTrack = &m_generatedSegment->m_leftHand;
-
-			else
-				m_targetTrack = &m_generatedSegment->m_rightHand;
 
 			m_chunkDataRemaining -= length;
 

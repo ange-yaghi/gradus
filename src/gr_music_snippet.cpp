@@ -2,6 +2,9 @@
 
 grKey::grKey()
 {
+    Note = UNDEFINED_NOTE;
+    Accidental = UNDEFINED_ACCIDENTAL;
+    Quality = UNDEFINED_QUALITY;
 }
 
 grKey::~grKey()

@@ -5,6 +5,7 @@
 
 #include <fstream>
 
+#include "gr_object.h"
 #include "gr_dynamic_array.h"
 
 struct grMidiChunkHeader
@@ -37,7 +38,7 @@ struct alignas(2) grMidiMTrkEventHeader
 };
 
 class grMidiTrack;
-class grMidiPianoSegment;
+class grMidiSegment;
 class grMidiNote : public grDynamicArrayElement
 {
 
@@ -124,10 +125,10 @@ public:
 
 };
 
-class grMidiTrack
+class grMidiTrack : public grObject
 {
 
-	friend class grMidiPianoSegment;
+	friend class grMidiSegment;
 
 public:
 
@@ -144,8 +145,8 @@ public:
 	grMidiNote *FindLastNote(int midiKey, int timeStamp);
 	grMidiNote *FindClosestNote(int midiKey, int timeStamp, int timeThreshold, int startIndex = 0);
 
-	grMidiPianoSegment *GetSegment() { return m_parent; }
-	void SetSegment(grMidiPianoSegment *segment) { m_parent = segment; }
+	grMidiSegment *GetSegment() { return m_parent; }
+	void SetSegment(grMidiSegment *segment) { m_parent = segment; }
 
 	bool IsEmpty() const { return m_notes.GetNumObjects() > 0; }
 	void Clear() { m_notes.Clear(); }
@@ -160,12 +161,12 @@ public:
 
 protected:
 
-	grMidiPianoSegment *m_parent;
+	grMidiSegment *m_parent;
 	grDynamicArray<grMidiNote, 4> m_notes;
 
 };
 
-class grMidiPianoSegment : public grDynamicArrayElement
+class grMidiSegment : public grDynamicArrayElement
 {
 
 	friend class grMidiFile;
@@ -183,11 +184,8 @@ public:
 
 public:
 
-	grMidiPianoSegment();
-	~grMidiPianoSegment();
-
-	grMidiTrack m_leftHand;
-	grMidiTrack m_rightHand;
+	grMidiSegment();
+	~grMidiSegment();
 
 	int ConvertDeltaTimeToNote(int deltaTime) const;
 	int ConvertDeltaTimeToMilliseconds(int deltaTime, int tempoBPM) const;
@@ -213,11 +211,21 @@ public:
 	int GetTempo() const { return m_tempo; }
 	int GetTempoBPM() const;
 
-	bool IsEmpty() const { return (m_leftHand.IsEmpty() && m_rightHand.IsEmpty()); }
+	void CopySettingsTo(grMidiSegment *targetSegment) const;
 
-	void CopySettingsTo(grMidiPianoSegment *targetSegment) const;
+	grMidiTrack *NewTrack() 
+	{
+		grMidiTrack *newTrack = m_tracks.New(); 
+		newTrack->m_parent = this;
+
+		return newTrack;
+	}
+	grMidiTrack *GetTrack(int index) const { return m_tracks.Get(index); }
+	int GetTrackCount() const { return m_tracks.GetNumObjects(); }
 
 protected:
+
+	grDynamicArray<grMidiTrack, 4> m_tracks;
 
 	TIME_FORMAT m_timeFormat;
 
@@ -254,8 +262,8 @@ public:
 	grMidiFile();
 	~grMidiFile();
 
-	void Write(const char *fname, grMidiPianoSegment *segment);
-	grMidiPianoSegment *Read(const char *fname);
+	void Write(const char *fname, grMidiSegment *segment);
+	grMidiSegment *Read(const char *fname);
 
 	static void ByteSwap32(UINT32 *data);
 	static void ByteSwap24(UINT32 *data);
@@ -263,7 +271,7 @@ public:
 
 protected:
 
-	void WriteTrackData(grMidiChunk_Track *target, grMidiTrack *source, grMidiPianoSegment *segment, int channel);
+	void WriteTrackData(grMidiChunk_Track *target, grMidiTrack *source, grMidiSegment *segment, int channel);
 
 	void ReadChunk(grMidiChunkHeader *header);
 	UINT32 ReadTrackEvent(UINT32 currentTime);
@@ -273,7 +281,7 @@ protected:
 	std::fstream m_file;
 
 	grMidiTrack *m_targetTrack;
-	grMidiPianoSegment *m_generatedSegment;
+	grMidiSegment *m_generatedSegment;
 	unsigned int m_chunkDataRemaining;
 
 protected:
