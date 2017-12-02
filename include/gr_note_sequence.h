@@ -6,7 +6,7 @@
 
 #include <gr_dynamic_array.h>
 
-
+class grMidiTrack;
 class grNoteSequence : public grObject
 {
 
@@ -22,6 +22,9 @@ public:
 	
 	// Get a note at a specific index
 	grNote *GetNote(int index) const { return m_notes.Get(index); }
+
+	// Generate a note sequence based on a midi track
+	void Generate(grMidiTrack *track);
 
 private:
 

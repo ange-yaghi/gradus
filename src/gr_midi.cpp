@@ -61,11 +61,11 @@ void grMidiNote::GetNaturalNotation(char *letter, bool *accidental, int *octave)
 
 	else *accidental = false;
 
-	if (c_offset > 10) c_offset -= 5;
-	else if (c_offset > 8) c_offset -= 4;
-	else if (c_offset > 6) c_offset -= 3;
-	else if (c_offset > 3) c_offset -= 2;
-	else if (c_offset > 1) c_offset -= 1;
+	if (c_offset > 10)		c_offset -= 5;
+	else if (c_offset > 8)	c_offset -= 4;
+	else if (c_offset > 6)	c_offset -= 3;
+	else if (c_offset > 3)	c_offset -= 2;
+	else if (c_offset > 1)	c_offset -= 1;
 
 	*letter = 'A' + (2 + c_offset) % 7;
 

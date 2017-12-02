@@ -3,6 +3,8 @@
 
 #include "gr_object.h"
 
+#include "gr_music_snippet.h"
+
 class grNoteValue
 {
 
@@ -35,6 +37,7 @@ private:
 
 };
 
+class grMidiNote;
 class grNote : public grObject
 {
 public:
@@ -44,24 +47,25 @@ public:
 	enum ACCIDENTAL
 	{
 		NATURAL,
-		FLAT,
 		SHARP,
+		FLAT,
 		DOUBLE_FLAT,
 		DOUBLE_SHARP,
-		NONE
+		NONE,
+		UNDEFINED
 	};
 
 	enum NOTE
 	{
+		A,
+		B,
 		C,
 		D,
 		E,
 		F,
 		G,
-		A,
-		B,
 		REST,
-		BLANK
+		UNDEFINED_NOTE
 	};
 
 	// Get the accidental for this note
@@ -87,6 +91,17 @@ public:
 
 	// Get the note value
 	grNoteValue getNoteValue() { return m_noteValue; }
+
+	// Generate from a midi note
+	void generateFromMidi(grMidiNote *midiNote, grKey *key);
+
+	// Get the tone that precedes the input tone
+	static NOTE getPreviousTone(NOTE note);
+
+	// Get the equivalent note with a target accidental
+	static grNote::NOTE getEnharmonicEquivalent(grNote::ACCIDENTAL targetAccidental, grNote::NOTE note, grNote::ACCIDENTAL accidental);
+
+	static void transpose(grNote::NOTE note, grNote::ACCIDENTAL accidental, grNote::NOTE *newNote, grNote::NOTE *newAccidental, int semitones);
 
 private:
 	// Accidental applied to this note

@@ -29,11 +29,17 @@ public:
 
     enum ACCIDENTAL
     {
+		NATURAL,
         SHARP,
         FLAT,
-        NATURAL,
         UNDEFINED_ACCIDENTAL
     };
+
+	static const grNote::ACCIDENTAL SIGNATURES[][][];
+
+	grNote::ACCIDENTAL *getKeySignature();
+
+	void resolveNote(grNote::NOTE note, grNote::ACCIDENTAL accidental, grNote::NOTE *correctedNote, grNote::ACCIDENTAL *correctedAccidental);
 
 public:
 
@@ -45,6 +51,10 @@ public:
     ACCIDENTAL  Accidental;
 
     std::string GetLilypondKeyString() const;
+
+private:
+
+	grNote::ACCIDENTAL *lookupKeySignature(NOTE note, ACCIDENTAL accidental);
 
 };
 
