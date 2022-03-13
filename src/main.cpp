@@ -2,9 +2,7 @@
 
 #include "gr_midi.h"
 
-int main()
-{
-
+int main() {
 	grMidiFile midi;
 	grMidiSegment *segment = midi.Read("phrase_1_bach.mid");
 
